@@ -1,4 +1,4 @@
-#Progress
+## DAY1 Progress
 title: "Checkpoint 1: Initial Setup & Idea Validation (03:00 PM)",
     tasks: 
       "Create public GitHub repo: NeuralForge_Smart-System",
@@ -11,3 +11,7 @@ title: "Checkpoint 1: Initial Setup & Idea Validation (03:00 PM)",
       Checkpoint 2:    Tasks completed---frontend  
       Current Progress: Backend Ongoing 
       Next steps: Connecting backend and Frontend
+    
+      Checkpoint 3: Tasks completed:Frontend  & Backend
+                    Current Progress: Login Page
+                    Next Steps : Case Testing

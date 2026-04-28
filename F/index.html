@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>National Digital Identity Vault - Government of India</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <h1>Government of India</h1>
+                    <p>National Digital Identity Vault</p>
+                </div>
+                <nav class="nav">
+                    <a href="#home">Home</a>
+                    <a href="#upload">Upload</a>
+                    <a href="#update">Update</a>
+                    <button id="darkModeToggle" class="dark-mode-toggle">🌙</button>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <h2>Secure Digital Identity Vault</h2>
+            <p>Store all your personal documents and identity information in one secure location. Generate a QR-based digital identity card that can be verified instantly.</p>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="container">
+            <!-- Form Container -->
+            <div class="form-container card" id="upload">
+                <h3>Register Your Identity</h3>
+                <form id="identityForm">
+                    <!-- Section 1: Basic Details -->
+                    <div class="form-section">
+                        <h4>Section 1: Basic Details</h4>
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="fullName">Full Name *</label>
+                                <input type="text" id="fullName" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="phone">Phone Number *</label>
+                                <input type="tel" id="phone" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="email">Email *</label>
+                                <input type="email" id="email" required>
+                            </div>
+                            <div class="form-group full-width">
+                                <label for="address">Address *</label>
+                                <textarea id="address" rows="3" required></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Section 2: Primary Identity -->
+                    <div class="form-section">
+                        <h4>Section 2: Primary Identity (Required)</h4>
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="aadhaar">Aadhaar Number *</label>
+                                <input type="text" id="aadhaar" maxlength="12" required>
+                                <small>12 digits required</small>
+                            </div>
+                            <div class="form-group">
+                                <label for="voterId">Voter ID</label>
+                                <input type="text" id="voterId">
+                            </div>
+                            <div class="form-group">
+                                <label for="drivingLicence">Driving Licence</label>
+                                <input type="text" id="drivingLicence">
+                            </div>
+                            <div class="form-group">
+                                <label for="passport">Passport Number</label>
+                                <input type="text" id="passport">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Section 3: Financial Details -->
+                    <div class="form-section">
+                        <h4>Section 3: Financial Details</h4>
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="pan">PAN Number *</label>
+                                <input type="text" id="pan" maxlength="10" required>
+                                <small>Format: ABCDE1234F</small>
+                            </div>
+                            <div class="form-group">
+                                <label for="bankName">Bank Name</label>
+                                <input type="text" id="bankName">
+                            </div>
+                            <div class="form-group">
+                                <label for="accountNumber">Account Number</label>
+                                <input type="text" id="accountNumber">
+                            </div>
+                            <div class="form-group">
+                                <label for="ifsc">IFSC Code</label>
+                                <input type="text" id="ifsc">
+                            </div>
+                            <div class="form-group">
+                                <label for="rationCard">Ration Card Number</label>
+                                <input type="text" id="rationCard">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Section 4: Document Uploads -->
+                    <div class="form-section">
+                        <h4>Section 4: Document Uploads</h4>
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="aadhaarPdf">Aadhaar PDF</label>
+                                <input type="file" id="aadhaarPdf" accept=".pdf">
+                            </div>
+                            <div class="form-group">
+                                <label for="panPdf">PAN PDF</label>
+                                <input type="file" id="panPdf" accept=".pdf">
+                            </div>
+                            <div class="form-group">
+                                <label for="bankStatement">Bank Statement PDF</label>
+                                <input type="file" id="bankStatement" accept=".pdf">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Section 5: Foundational Records -->
+                    <div class="form-section">
+                        <h4>Section 5: Foundational Records</h4>
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="birthCert">Birth Certificate</label>
+                                <input type="file" id="birthCert" accept=".pdf">
+                            </div>
+                            <div class="form-group">
+                                <label for="marks10th">10th Marks</label>
+                                <input type="text" id="marks10th">
+                            </div>
+                            <div class="form-group">
+                                <label for="marks12th">12th Marks</label>
+                                <input type="text" id="marks12th">
+                            </div>
+                            <div class="form-group">
+                                <label for="degree">Degree (Optional)</label>
+                                <input type="text" id="degree">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Section 6: Optional -->
+                    <div class="form-section collapsible">
+                        <h4 class="collapsible-header">Section 6: Optional Documents <span class="toggle-icon">▼</span></h4>
+                        <div class="collapsible-content">
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label for="marriageCert">Marriage Certificate</label>
+                                    <input type="file" id="marriageCert" accept=".pdf">
+                                </div>
+                                <div class="form-group">
+                                    <label for="additionalDocs">Additional Documents</label>
+                                    <input type="file" id="additionalDocs" accept=".pdf" multiple>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Section 7: Security -->
+                    <div class="form-section">
+                        <h4>Section 7: Security Key</h4>
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="securityKey">5-Character Security Key *</label>
+                                <input type="text" id="securityKey" maxlength="5" required>
+                                <small>A-Z and 0-9 only, exactly 5 characters</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="action-buttons">
+                        <button type="submit" class="btn btn-primary">Generate Digital ID</button>
+                        <button type="button" id="updateBtn" class="btn btn-secondary">Update Data</button>
+                        <button type="reset" class="btn btn-outline">Clear Form</button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Loading Spinner -->
+            <div class="loading-spinner" id="loadingSpinner">
+                <div class="spinner"></div>
+                <p>Processing your data...</p>
+            </div>
+
+            <!-- Success Message -->
+            <div class="success-message" id="successMessage">
+                <div class="success-content">
+                    <span class="success-icon">✓</span>
+                    <p>Digital Identity successfully generated!</p>
+                </div>
+            </div>
+
+            <!-- QR Preview Section -->
+            <div class="qr-section card" id="qrSection">
+                <h3>Your Digital Identity QR Code</h3>
+                <div class="qr-container">
+                    <div id="qrcode"></div>
+                </div>
+                <button id="downloadPdfBtn" class="btn btn-primary">Download PDF</button>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2024 Government of India. All Rights Reserved.</p>
+            <p>National Digital Identity Vault - Secure, Encrypted, Verified</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
