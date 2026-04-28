@@ -6,3 +6,8 @@ title: "Checkpoint 1: Initial Setup & Idea Validation (03:00 PM)",
       "Define problem statement: fragmented government workflows",
       "Define system inputs: Citizen Data, Documents, UPI Payments, Requests",
       "Define entities: Citizen, Officer, Department, Workflow Engine"
+     
+     
+      Checkpoint 2:    Tasks completed---frontend  
+      Current Progress: Backend Ongoing 
+      Next steps: Connecting backend and Frontend

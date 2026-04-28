@@ -1,0 +1,687 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GovFlow - Fullstack Public Service Platform | Backend Admin</title>
+    <style>
+        :root {
+            --primary: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+            --success: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            --warning: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            --danger: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            --glass: rgba(255, 255, 255, 0.08);
+            --glass-border: rgba(255, 255, 255, 0.12);
+            --shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 30px 60px rgba(0, 0, 0, 0.15);
+            --bg-primary: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg-primary);
+            color: #e2e8f0;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* Layout */
+        .app-container {
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            grid-template-rows: 70px 1fr;
+            height: 100vh;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            background: rgba(15, 23, 42, 0.95);
+            backdrop-filter: blur(20px);
+            border-right: 1px solid var(--glass-border);
+            padding: 2rem 1rem;
+            overflow-y: auto;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 800;
+            background: var(--primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 3rem;
+            padding: 1rem 0;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            margin-bottom: 0.5rem;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: #94a3b8;
+        }
+
+        .nav-item.active,
+        .nav-item:hover {
+            background: rgba(37, 99, 235, 0.1);
+            color: #60a5fa;
+        }
+
+        /* Topbar */
+        .topbar {
+            background: rgba(15, 23, 42, 0.95);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--glass-border);
+            padding: 0 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 0.75rem 1.5rem;
+            background: var(--glass);
+            border-radius: 50px;
+            border: 1px solid var(--glass-border);
+        }
+
+        .notifications {
+            position: relative;
+            cursor: pointer;
+        }
+
+        .notification-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: #ef4444;
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            font-size: 0.75rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Main Content */
+        .main-content {
+            padding: 2rem;
+            overflow-y: auto;
+        }
+
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .page-title {
+            font-size: 2rem;
+            font-weight: 800;
+        }
+
+        /* Stats Cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: var(--glass);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            padding: 1.5rem;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 800;
+            background: var(--primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Data Tables */
+        .data-table {
+            background: var(--glass);
+            backdrop-filter: blur(20px);
+            border-radius: 16px;
+            overflow: hidden;
+            border: 1px solid var(--glass-border);
+            margin-bottom: 2rem;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            background: rgba(37, 99, 235, 0.1);
+            padding: 1.25rem;
+            text-align: left;
+            font-weight: 600;
+            color: #e2e8f0;
+        }
+
+        td {
+            padding: 1.25rem;
+            border-bottom: 1px solid var(--glass-border);
+        }
+
+        tr:hover {
+            background: rgba(37, 99, 235, 0.05);
+        }
+
+        /* Status Badges */
+        .status-badge {
+            padding: 0.25rem 1rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .status-pending { background: rgba(251, 191, 36, 0.2); color: #f59e0b; }
+        .status-processing { background: rgba(59, 130, 246, 0.2); color: #3b82f6; }
+        .status-approved { background: rgba(16, 185, 129, 0.2); color: #10b981; }
+        .status-rejected { background: rgba(239, 68, 68, 0.2); color: #ef4444; }
+
+        /* Action Buttons */
+        .btn {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 0 0.25rem;
+            font-size: 0.85rem;
+        }
+
+        .btn-primary { background: var(--primary); color: white; }
+        .btn-success { background: var(--success); color: white; }
+        .btn-warning { background: var(--warning); color: white; }
+        .btn-danger { background: var(--danger); color: white; }
+
+        /* Charts */
+        .chart-container {
+            background: var(--glass);
+            backdrop-filter: blur(20px);
+            border-radius: 16px;
+            padding: 2rem;
+            border: 1px solid var(--glass-border);
+            height: 300px;
+            margin-bottom: 2rem;
+        }
+
+        /* Forms */
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            color: #ffffff;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .app-container {
+                grid-template-columns: 1fr;
+                grid-template-rows: 70px 80px 1fr;
+            }
+            
+            .sidebar {
+                grid-row: 2 / 4;
+                overflow-x: auto;
+            }
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s ease forwards;
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="logo">🏛️ GovFlow Admin</div>
+            <div class="nav-item active" onclick="showPage('dashboard')">
+                <span>📊</span> Dashboard
+            </div>
+            <div class="nav-item" onclick="showPage('requests')">
+                <span>📋</span> All Requests
+            </div>
+            <div class="nav-item" onclick="showPage('analytics')">
+                <span>📈</span> Analytics
+            </div>
+            <div class="nav-item" onclick="showPage('departments')">
+                <span>🏢</span> Departments
+            </div>
+            <div class="nav-item" onclick="showPage('users')">
+                <span>👥</span> Users
+            </div>
+            <div class="nav-item" onclick="showPage('settings')">
+                <span>⚙️</span> Settings
+            </div>
+            <div style="margin-top: auto; padding-top: 2rem;">
+                <div class="nav-item">
+                    <span>🔒</span> Admin Mode
+                </div>
+                <div class="nav-item">
+                    <span>📤</span> Logout
+                </div>
+            </div>
+        </div>
+
+        <!-- Topbar -->
+        <div class="topbar">
+            <div style="display: flex; align-items: center; gap: 1rem;">
+                <h2 id="pageTitle">Dashboard</h2>
+            </div>
+            <div class="user-profile">
+                <div class="notifications" onclick="toggleNotifications()">
+                    🔔 <div class="notification-badge">5</div>
+                </div>
+                <div>
+                    <div style="font-weight: 600;">Admin User</div>
+                    <div style="font-size: 0.85rem; opacity: 0.7;">Super Admin</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Dashboard Page -->
+            <div id="dashboard-page" class="page fade-in">
+                <div class="page-header">
+                    <div class="page-title">Dashboard Overview</div>
+                    <div>
+                        <input type="text" placeholder="Search requests..." style="padding: 0.75rem 1rem; border-radius: 12px; border: 1px solid var(--glass-border); background: var(--glass); color: white; width: 300px;">
+                        <button class="btn btn-primary" style="margin-left: 1rem;">🔄 Refresh</button>
+                    </div>
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-number" data-value="2,847">0</div>
+                        <div>Total Requests</div>
+                        <div style="color: #10b981; font-size: 0.9rem;">+12% from last week</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" data-value="1,234">0</div>
+                        <div>Pending</div>
+                        <div style="color: #f59e0b; font-size: 0.9rem;">+8 requests today</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" data-value="892">0</div>
+                        <div>Approved</div>
+                        <div style="color: #10b981; font-size: 0.9rem;">95% approval rate</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" data-value="156">0</div>
+                        <div>Rejected</div>
+                        <div style="color: #ef4444; font-size: 0.9rem;">-3% from last month</div>
+                    </div>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 2rem;">
+                    <div class="data-table">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Recent Requests</th>
+                                    <th>Citizen</th>
+                                    <th>Service</th>
+                                    <th>Status</th>
+                                    <th>Department</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="recentRequests">
+                                <!-- Dynamic -->
+                            </tbody>
+                        </table>
+                    </div>
+                    <div>
+                        <div class="chart-container">
+                            <h3 style="margin-bottom: 1rem;">Processing Time (Days)</h3>
+                            <canvas id="processingChart" width="400" height="200"></canvas>
+                        </div>
+                        <div class="chart-container">
+                            <h3 style="margin-bottom: 1rem;">Service Distribution</h3>
+                            <canvas id="serviceChart" width="400" height="200"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Requests Page -->
+            <div id="requests-page" class="page" style="display: none;">
+                <div class="page-header">
+                    <div class="page-title">All Requests (2,847)</div>
+                    <div style="display: flex; gap: 1rem;">
+                        <select style="padding: 0.75rem; border-radius: 12px; border: 1px solid var(--glass-border); background: var(--glass); color: white;">
+                            <option>All Status</option>
+                            <option>Pending</option>
+                            <option>Processing</option>
+                            <option>Approved</option>
+                        </select>
+                        <button class="btn btn-primary">Export CSV</button>
+                        <button class="btn btn-success">Bulk Approve</button>
+                    </div>
+                </div>
+                <div class="data-table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Citizen</th>
+                                <th>Service</th>
+                                <th>Status</th>
+                                <th>Submitted</th>
+                                <th>Department</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="allRequests">
+                            <!-- Dynamic -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Analytics Page -->
+            <div id="analytics-page" class="page" style="display: none;">
+                <div class="page-header">
+                    <div class="page-title">Analytics & Reports</div>
+                </div>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(500px, 1fr)); gap: 2rem;">
+                    <div class="chart-container" style="height: 400px;">
+                        <h3>Requests Over Time</h3>
+                        <canvas id="requestsChart" width="600" height="300"></canvas>
+                    </div>
+                    <div class="chart-container" style="height: 400px;">
+                        <h3>Bottleneck Analysis</h3>
+                        <canvas id="bottleneckChart" width="600" height="300"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Departments Page -->
+            <div id="departments-page" class="page" style="display: none;">
+                <div class="page-header">
+                    <div class="page-title">Departments (14)</div>
+                    <button class="btn btn-primary">+ Add Department</button>
+                </div>
+                <div class="data-table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Officials</th>
+                                <th>Pending Requests</th>
+                                <th>Avg Processing Time</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>RTO Department</td>
+                                <td>24</td>
+                                <td>156</td>
+                                <td>3.2 days</td>
+                                <td><span class="status-badge status-processing">Active</span></td>
+                            </tr>
+                            <tr>
+                                <td>Passport Office</td>
+                                <td>18</td>
+                                <td>89</td>
+                                <td>5.1 days</td>
+                                <td><span class="status-badge status-approved">Active</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Settings Page -->
+            <div id="settings-page" class="page" style="display: none;">
+                <div class="page-header">
+                    <div class="page-title">System Settings</div>
+                </div>
+                <div style="max-width: 600px;">
+                    <div class="form-group">
+                        <label>Auto-Approval Threshold (Days)</label>
+                        <input type="number" value="7" min="1" max="30">
+                    </div>
+                    <div class="form-group">
+                        <label>UPI Payment Timeout (Minutes)</label>
+                        <input type="number" value="15" min="5" max="60">
+                    </div>
+                    <div class="form-group">
+                        <label>Enable SMS Notifications</label>
+                        <label style="display: flex; align-items: center; gap: 0.5rem; margin-top: 0.5rem;">
+                            <input type="checkbox" checked>
+                            <span>Send SMS for status updates</span>
+                        </label>
+                    </div>
+                    <button class="btn btn-primary" style="width: 100%; padding: 1rem;">💾 Save Settings</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // Backend Data Simulation
+        const backendData = {
+            requests: [
+                {id: 'REQ2847', citizen: 'Ravi Kumar', service: 'Ration Card', status: 'pending', dept: 'FCS', submitted: '2024-01-15 10:30'},
+                {id: 'REQ2846', citizen: 'Priya Sharma', service: 'Driving License', status: 'approved', dept: 'RTO', submitted: '2024-01-15 09:15'},
+                {id: 'REQ2845', citizen: 'Amit Patel', service: 'Passport', status: 'processing', dept: 'Passport', submitted: '2024-01-14 16:45'},
+                {id: 'REQ2844', citizen: 'Sunita Devi', service: 'Property Tax', status: 'rejected', dept: 'Municipal', submitted: '2024-01-14 14:20'}
+            ],
+            stats: { total: 2847, pending: 1234, approved: 892, rejected: 156 },
+            departments: ['RTO', 'Passport', 'FCS', 'Municipal', 'Health']
+        };
+
+        // Page Navigation
+        function showPage(pageName) {
+            document.querySelectorAll('.page').forEach(page => page.style.display = 'none');
+            document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+            
+            document.getElementById(pageName + '-page').style.display = 'block';
+            document.querySelector(`[onclick="showPage('${pageName}')"]`).classList.add('active');
+            document.getElementById('pageTitle').textContent = pageName.charAt(0).toUpperCase() + pageName.slice(1);
+            
+            if (pageName === 'dashboard') initDashboard();
+            if (pageName === 'requests') loadAllRequests();
+        }
+
+        // Animate stats
+        function animateStats() {
+            document.querySelectorAll('.stat-number').forEach(stat => {
+                const target = parseInt(stat.dataset.value);
+                let current = 0;
+                const increment = target / 100;
+                const timer = setInterval(() => {
+                    current += increment;
+                    if (current >= target) {
+                        stat.textContent = target.toLocaleString();
+                        clearInterval(timer);
+                    } else {
+                        stat.textContent = Math.floor(current).toLocaleString();
+                    }
+                }, 20);
+            });
+        }
+
+        // Initialize Dashboard
+        function initDashboard() {
+            // Update stats
+            Object.keys(backendData.stats).forEach((key, index) => {
+                const stat = document.querySelectorAll('.stat-card')[index];
+                stat.querySelector('.stat-number').dataset.value = backendData.stats[key];
+            });
+            animateStats();
+
+            // Recent requests
+            renderRecentRequests();
+
+            // Charts
+            initCharts();
+        }
+
+        function renderRecentRequests() {
+            const tbody = document.getElementById('recentRequests');
+            const recent = backendData.requests.slice(0, 5);
+            tbody.innerHTML = recent.map(req => `
+                <tr>
+                    <td>${req.id}</td>
+                    <td>${req.citizen}</td>
+                    <td>${req.service}</td>
+                    <td><span class="status-badge status-${req.status}">${req.status.toUpperCase()}</span></td>
+                    <td>${req.dept}</td>
+                    <td>
+                        <button class="btn btn-primary" onclick="viewRequest('${req.id}')">View</button>
+                        <button class="btn btn-success" onclick="approveRequest('${req.id}')">Approve</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function loadAllRequests() {
+            const tbody = document.getElementById('allRequests');
+            tbody.innerHTML = backendData.requests.map(req => `
+                <tr>
+                    <td>${req.id}</td>
+                    <td>${req.citizen}</td>
+                    <td>${req.service}</td>
+                    <td><span class="status-badge status-${req.status}">${req.status.toUpperCase()}</span></td>
+                    <td>${req.submitted}</td>
+                    <td>${req.dept}</td>
+                    <td>
+                        <button class="btn btn-primary" onclick="viewRequest('${req.id}')">View</button>
+                        <button class="btn ${req.status === 'pending' ? 'btn-success' : 'btn-secondary'}" onclick="approveRequest('${req.id}')">${req.status === 'pending' ? 'Approve' : 'Reopen'}</button>
+                        <button class="btn btn-danger" onclick="rejectRequest('${req.id}')">Reject</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        // Charts
+        let charts = {};
+        function initCharts() {
+            // Processing time chart
+            const processingCtx = document.getElementById('processingChart').getContext('2d');
+            charts.processing = new Chart(processingCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['RTO', 'Passport', 'FCS', 'Municipal'],
+                    datasets: [{
+                        label: 'Avg Days',
+                        data: [3.2, 5.1, 2.8, 4.5],
+                        backgroundColor: 'rgba(59, 130, 246, 0.6)'
+                    }]
+                },
+                options: { responsive: true, maintainAspectRatio: false }
+            });
+
+            // Service distribution
+            const serviceCtx = document.getElementById('serviceChart').getContext('2d');
+            charts.service = new Chart(serviceCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Ration Card', 'Driving License', 'Passport', 'Property Tax'],
+                    datasets: [{
+                        data: [45, 30, 15, 10],
+                        backgroundColor: ['#10b981', '#3b82f6', '#f59e0b', '#ef4444']
+                    }]
+                },
+                options: { responsive: true, maintainAspectRatio: false }
+            });
+        }
+
+        // Request actions
+        function viewRequest(id) {
+            alert(`🔍 Opening detailed view for ${id}\n\nBackend would load full request data, documents, audit trail, and comments here.`);
+        }
+
+        function approveRequest(id) {
+            alert(`✅ Request ${id} APPROVED\n\nSMS/Email sent to citizen\nAudit trail updated\nStatus changed to APPROVED`);
+            // Simulate status change
+        }
+
+        function rejectRequest(id) {
+            const reason = prompt('Enter rejection reason:');
+            if (reason) {
+                alert(`❌ Request ${id} REJECTED\nReason: ${reason}\n\nCitizen notified via SMS/Email`);
+            }
+        }
+
+        // Notifications
+        function toggleNotifications() {
+            alert('🔔 Notifications (5 new):\n• 12 new requests pending\n• RTO dept overloaded\n• Payment timeout alert\n• Low document approval rate\n• System maintenance scheduled');
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            initDashboard();
+            animateStats();
+        });
+
+        // Real-time updates simulation
+        setInterval(() => {
+            if (Math.random() > 0.7) {
+                backendData.stats.pending += Math.floor(Math.random() * 3);
+                backendData.stats.total += 1;
+                animateStats();
+            }
+        }, 10000);
+    </script>
+</body>
+</html>
