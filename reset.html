@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Reset Password - JANSEVA</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: linear-gradient(to right, #1e3c72, #2a5298);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .container {
+      background: #fff;
+      padding: 30px;
+      border-radius: 10px;
+      width: 350px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+      text-align: center;
+    }
+
+    .container h2 {
+      margin-bottom: 10px;
+      color: #2a5298;
+    }
+
+    .container p.subtitle {
+      font-size: 13px;
+      color: #666;
+      margin-bottom: 20px;
+    }
+
+    .container p.email-sent {
+      font-size: 13px;
+      color: #2a5298;
+      font-weight: bold;
+      background: #eef3ff;
+      padding: 8px 10px;
+      border-radius: 5px;
+      margin-bottom: 20px;
+    }
+
+    .input-group {
+      margin-bottom: 15px;
+      text-align: left;
+    }
+
+    .input-group label {
+      font-size: 14px;
+      color: #333;
+    }
+
+    .input-group input {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      box-sizing: border-box;
+      font-size: 14px;
+      transition: border-color 0.3s ease;
+    }
+
+    .input-group input.error {
+      border-color: #ef4444;
+      box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.1);
+    }
+
+    .input-group input.success {
+      border-color: #10b981;
+      box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.1);
+    }
+
+    /* OTP boxes */
+    .otp-group {
+      display: flex;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 15px;
+    }
+
+    .otp-group input {
+      width: 45px;
+      height: 45px;
+      text-align: center;
+      font-size: 20px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      box-sizing: border-box;
+      transition: border-color 0.3s ease;
+    }
+
+    .otp-group input:focus {
+      border-color: #2a5298;
+      outline: none;
+      box-shadow: 0 0 0 2px rgba(42, 82, 152, 0.2);
+    }
+
+    .submit-btn {
+      width: 100%;
+      padding: 10px;
+      background: #2a5298;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      font-size: 16px;
+      cursor: pointer;
+      margin-bottom: 10px;
+      transition: background 0.3s ease;
+    }
+
+    .submit-btn:hover:not(:disabled) {
+      background: #1e3c72;
+    }
+
+    .submit-btn:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+    }
+
+    .resend-row {
+      font-size: 13px;
+      color: #666;
+      margin-bottom: 5px;
+    }
+
+    .resend-row a {
+      color: #2a5298;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    .resend-row a:hover {
+      text-decoration: underline;
+    }
+
+    .links {
+      margin-top: 15px;
+      font-size: 14px;
+    }
+
+    .links a {
+      color: #2a5298;
+      text-decoration: none;
+    }
+
+    .links a:hover {
+      text-decoration: underline;
+    }
+
+    /* Step indicator */
+    .steps {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 20px;
+    }
+
+    .step {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: #ccc;
+      color: #fff;
+      font-size: 13px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      transition: all 0.3s ease;
+    }
+
+    .step.active {
+      background: #2a5298;
+      transform: scale(1.1);
+    }
+
+    .step.done {
+      background: #28a745;
+    }
+
+    .step-line {
+      height: 2px;
+      width: 30px;
+      background: #ccc;
+      transition: background 0.3s ease;
+    }
+
+    .step-line.done {
+      background: #28a745;
+    }
+
+    /* Screens */
+    .screen { display: none; }
+    .screen.active { display: block; }
+
+    /* New password section */
+    .password-hint {
+      font-size: 11px;
+      color: #999;
+      margin-top: 4px;
+    }
+
+    .error-message {
+      background: #fef2f2;
+      color: #dc2626;
+      padding: 10px;
+      border-radius: 5px;
+      margin-bottom: 15px;
+      font-size: 13px;
+      border-left: 4px solid #ef4444;
+      display: none;
+    }
+
+    .success-message {
+      background: #f0fdf4;
+      color: #166534;
+      padding: 10px;
+      border-radius: 5px;
+      margin-bottom: 15px;
+      font-size: 13px;
+      border-left: 4px solid #10b981;
+      display: none;
+    }
+
+    .success-icon {
+      font-size: 48px;
+      margin-bottom: 10px;
+    }
+
+    /* Loading state */
+    .loading {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      border: 2px solid #ffffff20;
+      border-top: 2px solid #fff;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin-right: 8px;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>JANSEVA</h2>
+
+    <!-- Step Indicator -->
+    <div class="steps">
+      <div class="step active" id="step1">1</div>
+      <div class="step-line" id="line1"></div>
+      <div class="step" id="step2">2</div>
+      <div class="step-line" id="line2"></div>
+      <div class="step" id="step3">3</div>
+    </div>
+
+    <!-- Screen 1: Enter Email -->
+    <div class="screen active" id="screen1">
+      <p class="subtitle">Enter your registered email to receive an OTP for password reset.</p>
+      <div class="error-message" id="emailError"></div>
+      <div class="input-group">
+        <label>Registered Email</label>
+        <input type="email" id="emailInput" placeholder="Enter your email" required>
+      </div>
+      <button class="submit-btn" id="sendOtpBtn" onclick="sendOTP()">
+        <span id="sendOtpText">Send Reset Link</span>
+        <span id="sendOtpLoading" class="loading" style="display: none;"></span>
+      </button>
+      <div class="links">
+        <p><a href="forgot-password.html">&#8592; Back</a></p>
+      </div>
+    </div>
+
+    <!-- Screen 2: Enter OTP -->
+    <div class="screen" id="screen2">
+      <p class="subtitle">We've sent a 6-digit OTP to</p>
+      <p class="email-sent" id="displayEmail"></p>
+      <div class="error-message" id="otpError"></div>
+      <div class="input-group">
+        <label>Enter OTP</label>
+      </div>
+      <div class="otp-group">
+        <input type="text" maxlength="1" class="otp-box" id="otp1" oninput="moveNext(this, 'otp2')" autocomplete="one-time-code">
+        <input type="text" maxlength="1" class="otp-box" id="otp2" oninput="moveNext(this, 'otp3')">
+        <input type="text" maxlength="1" class="otp-box" id="otp3" oninput="moveNext(this, 'otp4')">
+        <input type="text" maxlength="1" class="otp-box" id="otp4" oninput="moveNext(this, 'otp5')">
+        <input type="text" maxlength="1" class="otp-box" id="otp5" oninput="moveNext(this, 'otp6')">
+        <input type="text" maxlength="1" class="otp-box" id="otp6" oninput="moveNext(this, null)">
+      </div>
+      <button class="submit-btn" id="verifyOtpBtn" onclick="verifyOTP()">
+        <span id="verifyOtpText">Verify OTP</span>
+        <span id="verifyOtpLoading" class="loading" style="display: none;"></span>
+      </button>
+      <div class="resend-row">
+        Didn't receive? <a href="#" onclick="resendOTP()">Resend OTP</a> (0:59)
+        <span id="resendTimer" style="display: none;"></span>
+      </div>
+      <div class="links">
+        <p><a href="#" onclick="goBack(1)">&#8592; Back</a></p>
+      </div>
+    </div>
+
+    <!-- Screen 3: Set New Password -->
+    <div class="screen" id="screen3">
+      <p class="subtitle">Create a new password for your account.</p>
+      <div class="error-message" id="passwordError"></div>
+      <div class="success-message" id="passwordSuccess"></div>
+      <div class="input-group">
+        <label>New Password</label>
+        <input type="password" id="newPassword" placeholder="Enter new password" required>
+        <p class="password-hint">• Minimum 8 characters • Use uppercase, lowercase, number & special character</p>
+      </div>
+      <div class="input-group">
+        <label>Confirm New Password</label>
+        <input type="password" id="confirmPassword" placeholder="Confirm new password" required>
+      </div>
+      <button class="submit-btn" id="resetPasswordBtn" onclick="resetPassword()">
+        <span id="resetPasswordText">Reset Password</span>
+        <span id="resetPasswordLoading" class="loading" style="display: none;"></span>
+      </button>
+      <div class="links">
+        <p><a href="#" onclick="goBack(2)">&#8592; Back</a></p>
+      </div>
+    </div>
+
+    <!-- Screen 4: Success -->
+    <div class="screen" id="screen4">
+      <div class="success-icon">✅</div>
+      <h3 style="color: #28a745; margin-bottom: 10px;">Password Reset Successful!</h3>
+      <p class="subtitle">Your password has been updated successfully. You can now log in with your new password.</p>
+      <button class="submit-btn" onclick="goToLogin()">Go to Login</button>
+      <div style="margin-top: 15px;">
+        <a href="#" onclick="restartProcess()" style="color: #666; font-size: 13px;">Reset another account</a>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    let resendTimer = 60;
+    let resendInterval;
+
+    function sendOTP() {
+      const email = document.getElementById('emailInput').value.trim();
+      const btn = document.getElementById('sendOtpBtn');
+      const text = document.getElementById('sendOtpText');
+      const loading = document.getElementById('sendOtpLoading');
+      const errorDiv = document.getElementById('emailError');
+
+      // Clear previous errors
+      errorDiv.style.display = 'none';
+
+      if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        showError('emailError', 'Please enter a valid email address.');
+        return;
+      }
+
+      // Simulate API call
+      btn.disabled = true;
+      text.style.display = 'none';
+      loading.style.display = 'inline-block';
+
+      setTimeout(() => {
+        document.getElementById('displayEmail').textContent = email;
+        btn.disabled = false;
+        text.style.display = 'inline';
+        loading.style.display = 'none';
+        goToScreen(2);
+        startResendTimer();
+      }, 1500);
+    }
+
+    function verifyOTP() {
+      const boxes = document.querySelectorAll('.otp-box');
+      let otp = '';
+      boxes.forEach(b => otp += b.value.trim());
+      const btn = document.getElementById('verifyOtpBtn');
+      const text = document.getElementById('verifyOtpText');
+      const loading = document.getElementById('verifyOtpLoading');
+      const errorDiv = document.getElementById('otpError');
+
+      // Clear previous errors
+      errorDiv.style.display = 'none';
+
+      if (otp.length < 6) {
+        showError('otpError', 'Please enter the complete 6-digit OTP.');
+        return;
+      }
+
+      // Simulate API call
+      btn.disabled = true;
+      text.style.display = 'none';
+      loading.style.display = 'inline-block';
+
+      setTimeout(() => {
+        btn.disabled = false;
+        text.style.display = 'inline';
+        loading.style.display = 'none';
+        goToScreen(3);
+      }, 1500);
+    }
+
+    function resetPassword() {
+      const newPass = document.getElementById('newPassword').value;
+      const confirmPass = document.getElementById('confirmPassword').value;
+      const btn = document.getElementById('resetPasswordBtn');
+      const text = document.getElementById('resetPasswordText');
+      const loading = document.getElementById('resetPasswordLoading');
+      const errorDiv = document.getElementById('passwordError');
+      const successDiv = document.getElementById('passwordSuccess');
+
+      // Clear previous messages
+      errorDiv.style.display = 'none';
+      successDiv.style.display = 'none';
+      clearInputErrors();
+
+      // Validation
+      if (newPass.length < 8) {
+        showError('passwordError', 'Password must be at least 8 characters long.');
+        document.getElementById('newPassword').classList.add('error');
+        return;
+      }
+
+      if (!/(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}/.test(newPass)) {
+        showError('passwordError', 'Password must contain uppercase, lowercase, number & special character.');
+        document.getElementById('newPassword').classList.add('error');
+        return;
+      }
+
+      if (newPass !== confirmPass) {
+        showError('passwordError', 'Passwords do not match. Please try again.');
+        document.getElementById('newPassword').classList.add('error');
+        document.getElementById('confirmPassword').classList.add('error');
+        // **STAY ON SAME PAGE - DO NOT GO TO LOGIN**
+        document.getElementById('newPassword').focus();
+        document.getElementById('newPassword').select();
+        return;
+      }
+
+      // Success validation
+      showSuccess('passwordSuccess', 'Passwords match! Setting new password...');
+
+      // Simulate API call
+      btn.disabled = true;
+      text.style.display = 'none';
+      loading.style.display = 'inline-block';
+
+      setTimeout(() => {
+        btn.disabled = false;
+        text.style.display = 'inline';
+        loading.style.display = 'none';
+        goToScreen(4);
+        // Store reset data in localStorage for demo
+        localStorage.setItem('resetEmail', document.getElementById('displayEmail').textContent);
+        localStorage.setItem('resetPassword', newPass);
+      }, 2000);
+    }
+
+    function resendOTP() {
+      const errorDiv = document.getElementById('otpError');
+      errorDiv.style.display = 'none';
+      alert('OTP has been resent to your email.');
+      clearOTP();
+      document.getElementById('otp1').focus();
+      startResendTimer();
+    }
+
+    function goToScreen(num) {
+      document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+      document.getElementById('screen' + num).classList.add('active');
+      updateSteps(num);
+    }
+
+    function goBack(num) {
+      // Clear form data when going back
+      if (num === 1) {
+        document.getElementById('emailInput').value = '';
+      } else if (num === 2) {
+        clearOTP();
+      } else if (num === 3) {
+        document.getElementById('newPassword').value = '';
+        document.getElementById('confirmPassword').value = '';
+        clearInputErrors();
+      }
+      goToScreen(num);
+    }
+
+    function goToLogin() {
+      // Redirect to login page
+      window.location.href = 'login.html';
+    }
+
+    function restartProcess() {
+      // Reset entire process
+      document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+      document.getElementById('screen1').classList.add('active');
+      updateSteps(1);
+      document.getElementById('emailInput').value = '';
+      clearOTP();
+      document.getElementById('newPassword').value = '';
+      document.getElementById('confirmPassword').value = '';
+      clearInputErrors();
+      document.getElementById('emailError').style.display = 'none';
+      document.getElementById('otpError').style.display = 'none';
+      document.getElementById('passwordError').style.display = 'none';
+      document.getElementById('passwordSuccess').style.display = 'none';
+    }
+
+    function updateSteps(num) {
+      for (let i = 1; i <= 3; i++) {
+        const step = document.getElementById('step' + i);
+        step.classList.remove('active', 'done');
+        if (i < num) step.classList.add('done');
+        else if (i === num) step.classList.add('active');
+      }
+      for (let i = 1; i <= 2; i++) {
+        const line = document.getElementById('line' + i);
+        line.classList.remove('done');
+        if (i < num) line.classList.add('done');
+      }
+    }
+
+    function moveNext(current, nextId) {
+      if (current.value.length === 1 && nextId) {
+        document.getElementById(nextId).focus();
+      } else if (current.value.length === 0 && current.id !== 'otp1') {
+        const prevId = getPreviousOtpId(current.id);
+        if (prevId) document.getElementById(prevId).focus();
+      }
+    }
+
+    function getPreviousOtpId(currentId) {
+      const num = parseInt(currentId.replace('otp', ''));
+      return num > 1 ? 'otp' + (num - 1) : null;
+    }
+
+    function clearOTP() {
+      document.querySelectorAll('.otp-box').forEach(box => box.value = '');
+    }
+
+    function showError(id, message) {
+      const errorDiv = document.getElementById(id);
+      errorDiv.textContent = message;
+      errorDiv.style.display = 'block';
+    }
+
+    function showSuccess(id, message) {
+      const successDiv = document.getElementById(id);
+      successDiv.textContent = message;
+      successDiv.style.display = 'block';
+    }
+
+    function clearInputErrors() {
+      document.querySelectorAll('input').forEach(input => {
+        input.classList.remove('error', 'success');
+      });
+    }
+
+    function startResendTimer() {
+      resendTimer = 60;
+      const resendLink = document.querySelector('.resend-row a');
+      const timerSpan = document.getElementById('resendTimer');
+      
+      resendLink.style.pointerEvents = 'none';
+      resendLink.style.opacity = '0.5';
+      timerSpan.style.display = 'inline';
+      
+      resendInterval = setInterval(() => {
+        resendTimer--;
+        timerSpan.textContent = ` (${resendTimer}s)`;
+        
+        if (resendTimer <= 0) {
+          clearInterval(resendInterval);
+          resendLink.style.pointerEvents = 'auto';
+          resendLink.style.opacity = '1';
+          timerSpan.style.display = 'none';
+          resendLink.textContent = 'Resend OTP';
+        } else {
+          resendLink.textContent = `Resend in ${resendTimer}s`;
+        }
+      }, 1000);
+    }
+
+    // Auto-focus first input on page load
+    document.addEventListener('DOMContentLoaded', () => {
+      document.getElementById('emailInput').focus();
+      
+      // Real-time password validation
+      document.getElementById('newPassword').addEventListener('input', validatePassword);
+      document.getElementById('confirmPassword').addEventListener('input', validateConfirmPassword);
+    });
+
+    function validatePassword() {
+      const password = document.getElementById('newPassword').value;
+      const confirmInput = document.getElementById('confirmPassword');
+      
+      if (password.length >= 8 && /(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}/.test(password)) {
+        document.getElementById('newPassword').classList.remove('error');
+        document.getElementById('newPassword').classList.add('success');
+      } else {
+        document.getElementById('newPassword').classList.remove('success');
+        document.getElementById('newPassword').classList.add('error');
+      }
+      
+      validateConfirmPassword();
+    }
+
+    function validateConfirmPassword() {
+      const newPass = document.getElementById('newPassword').value;
+      const confirmPass = document.getElementById('confirmPassword').value;
+      
+      if (confirmPass && newPass === confirmPass) {
+        document.getElementById('confirmPassword').classList.remove('error');
+        document.getElementById('confirmPassword').classList.add('success');
+      } else if (confirmPass) {
+        document.getElementById('confirmPassword').classList.remove('success');
+        document.getElementById('confirmPassword').classList.add('error');
+      }
+    }
+
+    // Allow Enter key to submit forms
+    document.addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') {
+        const activeScreen = document.querySelector('.screen.active');
+        if (activeScreen.id === 'screen1') {
+          sendOTP();
+        } else if (activeScreen.id === 'screen2') {
+          verifyOTP();
+        } else if (activeScreen.id === 'screen3') {
+          resetPassword();
+        }
+      }
+    });
+  </script>
+</body>
+</html>
