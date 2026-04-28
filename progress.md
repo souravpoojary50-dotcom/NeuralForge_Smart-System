@@ -15,3 +15,7 @@ title: "Checkpoint 1: Initial Setup & Idea Validation (03:00 PM)",
       Checkpoint 3: Tasks completed:Frontend  & Backend
                     Current Progress: Login Page
                     Next Steps : Case Testing
+
+      Checkpoint 4:Tasks completed : frontend ,backend & login page
+                   Current Progress: Integration
+                   Next steps: Testing               
