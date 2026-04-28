@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>National Scholarship Portal</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header class="site-header">
+    <div class="header-inner">
+      <div class="header-logo">
+        <div class="logo-emblem">
+          <span class="emblem-icon">🏛️</span>
+        </div>
+        <div class="header-text">
+          <h1 class="portal-title">National Scholarship Portal</h1>
+          <p class="portal-subtitle">Government of India &nbsp;|&nbsp; Ministry of Education</p>
+        </div>
+      </div>
+      <div class="header-right">
+        <span class="header-badge">Verified Portal</span>
+        <div class="header-flags">
+          <div class="flag-stripe saffron"></div>
+          <div class="flag-stripe white-stripe"></div>
+          <div class="flag-stripe green-stripe"></div>
+        </div>
+      </div>
+    </div>
+    <div class="header-nav">
+      <nav class="nav-links">
+        <a href="#" class="nav-link active">Home</a>
+        <a href="#" class="nav-link">Apply Now</a>
+        <a href="#" class="nav-link">Check Status</a>
+        <a href="#" class="nav-link">Renewal</a>
+        <a href="#" class="nav-link">Help</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- MARQUEE NOTICE -->
+  <div class="notice-bar">
+    <span class="notice-label">📢 Notice:</span>
+    <marquee behavior="scroll" direction="left" scrollamount="4">
+      Applications for NSP 2024-25 are now open &nbsp;|&nbsp; Last date to apply: 31st October 2025 &nbsp;|&nbsp; Upload your QR PDF to auto-fill your application &nbsp;|&nbsp; Helpline: 0120-6619540 &nbsp;|&nbsp; For technical support email: helpdesk@nsp.gov.in
+    </marquee>
+  </div>
+
+  <main class="main-content">
+
+    <!-- INTRO SECTION -->
+    <section class="intro-section">
+      <div class="intro-card">
+        <div class="intro-icon">📋</div>
+        <div class="intro-body">
+          <h2 class="intro-title">Welcome to the National Scholarship Portal</h2>
+          <p class="intro-desc">
+            This portal enables students across India to apply for central and state government scholarships seamlessly.
+            Upload your <strong>QR-encoded PDF</strong> and enter your unique <strong>5-character key</strong> to auto-fill your application instantly.
+          </p>
+          <div class="intro-steps">
+            <div class="step">
+              <span class="step-num">1</span>
+              <span class="step-text">Upload QR PDF</span>
+            </div>
+            <div class="step-arrow">→</div>
+            <div class="step">
+              <span class="step-num">2</span>
+              <span class="step-text">Enter Key</span>
+            </div>
+            <div class="step-arrow">→</div>
+            <div class="step">
+              <span class="step-num">3</span>
+              <span class="step-text">Auto-Fill Form</span>
+            </div>
+            <div class="step-arrow">→</div>
+            <div class="step">
+              <span class="step-num">4</span>
+              <span class="step-text">Submit</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- UPLOAD SECTION -->
+    <section class="section-card" id="upload-section">
+      <div class="section-header">
+        <span class="section-icon">📤</span>
+        <h2 class="section-title">Upload & Extract Data</h2>
+      </div>
+      <div class="upload-area" id="uploadArea">
+        <div class="upload-icon">📄</div>
+        <p class="upload-main-text">Click to upload your QR-based PDF</p>
+        <p class="upload-sub-text">Supported format: PDF only &nbsp;|&nbsp; Max size: 5 MB</p>
+        <input type="file" id="pdfUpload" accept=".pdf" class="file-input" />
+        <button class="btn-upload" id="uploadBtn" onclick="document.getElementById('pdfUpload').click()">
+          📂 Choose PDF File
+        </button>
+      </div>
+      <div class="file-info" id="fileInfo" style="display:none;">
+        <span class="file-icon">📄</span>
+        <span class="file-name" id="fileName"></span>
+        <span class="file-size" id="fileSize"></span>
+        <button class="btn-remove" id="removeFile">✕ Remove</button>
+      </div>
+
+      <div class="key-row">
+        <div class="key-input-group">
+          <label for="extractKey" class="key-label">🔑 Enter 5-Character Key</label>
+          <input
+            type="text"
+            id="extractKey"
+            class="key-input"
+            placeholder="e.g. A1B2C"
+            maxlength="5"
+            autocomplete="off"
+          />
+          <span class="key-hint">Provided along with your QR PDF document</span>
+        </div>
+        <button class="btn-extract" id="extractBtn">
+          <span class="btn-text">⚡ Extract Data</span>
+          <span class="btn-loader" id="btnLoader" style="display:none;">⏳ Extracting...</span>
+        </button>
+      </div>
+
+      <div class="alert alert-error" id="errorAlert" style="display:none;"></div>
+      <div class="alert alert-success" id="successAlert" style="display:none;"></div>
+
+      <div class="demo-hint">
+        <span class="hint-icon">💡</span>
+        <strong>Demo Mode:</strong> Click <em>"Load Demo Data"</em> to simulate a QR PDF upload, then use key <strong>NSP25</strong> to auto-fill.
+        <button class="btn-demo" id="loadDemoBtn">Load Demo Data</button>
+      </div>
+    </section>
+
+    <!-- APPLICATION FORM -->
+    <form class="application-form" id="applicationForm">
+
+      <!-- SECTION 1: PERSONAL DETAILS -->
+      <div class="section-card form-section" id="sec-personal">
+        <div class="section-header">
+          <span class="section-icon">👤</span>
+          <h2 class="section-title">Section 1: Personal Details</h2>
+          <span class="section-badge" id="badge-personal" style="display:none;">✔ Auto-Filled</span>
+        </div>
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="fullName">Full Name <span class="required">*</span></label>
+            <input type="text" id="fullName" name="fullName" placeholder="As per Aadhaar Card" />
+          </div>
+          <div class="form-group">
+            <label for="phone">Mobile Number <span class="required">*</span></label>
+            <input type="tel" id="phone" name="phone" placeholder="+91 XXXXX XXXXX" />
+          </div>
+          <div class="form-group">
+            <label for="email">Email Address <span class="required">*</span></label>
+            <input type="email" id="email" name="email" placeholder="example@email.com" />
+          </div>
+          <div class="form-group full-width">
+            <label for="address">Residential Address <span class="required">*</span></label>
+            <textarea id="address" name="address" rows="3" placeholder="House No., Street, City, State, PIN Code"></textarea>
+          </div>
+        </div>
+      </div>
+
+      <!-- SECTION 2: IDENTITY DETAILS -->
+      <div class="section-card form-section" id="sec-identity">
+        <div class="section-header">
+          <span class="section-icon">🪪</span>
+          <h2 class="section-title">Section 2: Identity Details</h2>
+          <span class="section-badge" id="badge-identity" style="display:none;">✔ Auto-Filled</span>
+        </div>
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="aadhaar">Aadhaar Number <span class="required">*</span></label>
+            <input type="text" id="aadhaar" name="aadhaar" placeholder="XXXX XXXX XXXX" maxlength="14" />
+          </div>
+          <div class="form-group">
+            <label for="pan">PAN Number <span class="required">*</span></label>
+            <input type="text" id="pan" name="pan" placeholder="ABCDE1234F" maxlength="10" />
+          </div>
+          <div class="form-group">
+            <label for="voterId">Voter ID</label>
+            <input type="text" id="voterId" name="voterId" placeholder="Voter ID Number" />
+          </div>
+          <div class="form-group">
+            <label for="drivingLicence">Driving Licence</label>
+            <input type="text" id="drivingLicence" name="drivingLicence" placeholder="DL Number" />
+          </div>
+          <div class="form-group">
+            <label for="passport">Passport Number</label>
+            <input type="text" id="passport" name="passport" placeholder="Passport Number" />
+          </div>
+        </div>
+      </div>
+
+      <!-- SECTION 3: BANK DETAILS -->
+      <div class="section-card form-section" id="sec-bank">
+        <div class="section-header">
+          <span class="section-icon">🏦</span>
+          <h2 class="section-title">Section 3: Bank Details</h2>
+          <span class="section-badge" id="badge-bank" style="display:none;">✔ Auto-Filled</span>
+        </div>
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="bankName">Bank Name <span class="required">*</span></label>
+            <input type="text" id="bankName" name="bankName" placeholder="Name of your Bank" />
+          </div>
+          <div class="form-group">
+            <label for="accountNumber">Account Number <span class="required">*</span></label>
+            <input type="text" id="accountNumber" name="accountNumber" placeholder="Bank Account Number" />
+          </div>
+          <div class="form-group">
+            <label for="ifscCode">IFSC Code <span class="required">*</span></label>
+            <input type="text" id="ifscCode" name="ifscCode" placeholder="e.g. SBIN0001234" maxlength="11" />
+          </div>
+        </div>
+      </div>
+
+      <!-- SECTION 4: EDUCATION -->
+      <div class="section-card form-section" id="sec-education">
+        <div class="section-header">
+          <span class="section-icon">🎓</span>
+          <h2 class="section-title">Section 4: Education Details</h2>
+          <span class="section-badge" id="badge-education" style="display:none;">✔ Auto-Filled</span>
+        </div>
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="marks10">10th Percentage / CGPA <span class="required">*</span></label>
+            <input type="text" id="marks10" name="marks10" placeholder="e.g. 85.4%" />
+          </div>
+          <div class="form-group">
+            <label for="marks12">12th Percentage / CGPA <span class="required">*</span></label>
+            <input type="text" id="marks12" name="marks12" placeholder="e.g. 91.2%" />
+          </div>
+          <div class="form-group full-width">
+            <label for="degree">Current Degree / Course <span class="required">*</span></label>
+            <input type="text" id="degree" name="degree" placeholder="e.g. B.Tech Computer Science, Year 2" />
+          </div>
+        </div>
+      </div>
+
+      <!-- SECTION 5: OPTIONAL -->
+      <div class="section-card form-section" id="sec-optional">
+        <div class="section-header">
+          <span class="section-icon">📎</span>
+          <h2 class="section-title">Section 5: Optional Documents</h2>
+          <span class="section-badge" id="badge-optional" style="display:none;">✔ Auto-Filled</span>
+        </div>
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="marriageCert">Marriage Certificate Number</label>
+            <input type="text" id="marriageCert" name="marriageCert" placeholder="If applicable" />
+          </div>
+          <div class="form-group">
+            <label for="additionalDocs">Additional Document Reference</label>
+            <input type="text" id="additionalDocs" name="additionalDocs" placeholder="Any other document ID" />
+          </div>
+        </div>
+      </div>
+
+      <!-- SUBMIT / RESET AREA -->
+      <div class="form-actions">
+        <button type="button" class="btn-reset" id="resetBtn">🔄 Reset Form</button>
+        <button type="submit" class="btn-submit" id="submitBtn">
+          ✅ Submit Application
+        </button>
+      </div>
+
+    </form>
+
+    <!-- SUCCESS MODAL -->
+    <div class="modal-overlay" id="successModal" style="display:none;">
+      <div class="modal-box">
+        <div class="modal-icon">🎉</div>
+        <h2 class="modal-title">Application Submitted Successfully!</h2>
+        <p class="modal-desc">Your scholarship application has been received. Keep this Application ID for future reference.</p>
+        <div class="app-id-box">
+          <span class="app-id-label">Application ID</span>
+          <span class="app-id-value" id="appIdValue"></span>
+        </div>
+        <p class="modal-note">📧 A confirmation has been sent to your registered email address.</p>
+        <button class="btn-modal-close" id="modalCloseBtn">Close & Start New</button>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div class="footer-col">
+        <h4 class="footer-heading">National Scholarship Portal</h4>
+        <p class="footer-text">A Government of India initiative under the Ministry of Education to provide scholarships to deserving students across the nation.</p>
+      </div>
+      <div class="footer-col">
+        <h4 class="footer-heading">Quick Links</h4>
+        <ul class="footer-links">
+          <li><a href="#">Home</a></li>
+          <li><a href="#">Apply for Scholarship</a></li>
+          <li><a href="#">Check Status</a></li>
+          <li><a href="#">Renewal</a></li>
+          <li><a href="#">Contact Us</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4 class="footer-heading">Support</h4>
+        <ul class="footer-links">
+          <li>📞 Helpline: 0120-6619540</li>
+          <li>📧 helpdesk@nsp.gov.in</li>
+          <li>🕐 Mon–Fri: 9 AM – 6 PM</li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2025 National Scholarship Portal | Government of India &nbsp;|&nbsp; <a href="#">Terms of Use</a> &nbsp;|&nbsp; <a href="#">Privacy Policy</a> &nbsp;|&nbsp; <a href="#">Disclaimer</a></p>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
