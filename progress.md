@@ -25,5 +25,5 @@
                    Current Progress: PPT Making
                    Next stepd:video making,preparing for pitch
       Checkpoint 6:- ✅ Your GitHub repository is fully updated
--                    ✅ All code is pushed with your final commit
--                    ✅ The repository is clean, well-structured, and properly documented (README & progress)             
+                     ✅ All code is pushed with your final commit
+                     ✅ The repository is clean, well-structured, and properly documented (README & progress)             
