@@ -21,3 +21,6 @@
       Checkpoint 4:Tasks completed : frontend ,backend & login page
                    Current Progress: Integration
                    Next steps: Testing               
+      Checkpoint 5:Tasks completed : frontend,backend , login page,Integration
+                   Current Progress: PPT Making
+                   Next stepd:video making,preparing for pitch
